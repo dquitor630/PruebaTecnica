@@ -1,0 +1,48 @@
+﻿@page "/Edit/{id}"
+@inject HttpClient Http
+@using PruebaTenica.Shared
+@inject NavigationManager Navigation
+<h3>Edit</h3>
+@if (_films == null)
+{
+        <p><em>Loading...</em></p>
+}
+else
+{
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var film in _films)
+            {
+                        <tr>
+                            <td>@film.Id.ToString()</td>
+                            <td>@film.Title</td>
+                             <td><button @onclick="() => add(film.Id)">Añadir</button></td>
+                        </tr>
+            }
+            </tbody>
+        </table>
+}
+@code {
+    [Parameter]
+    public String id { get; set; }
+    private List<Film> _films;
+    protected override async Task OnInitializedAsync()
+    {
+        _films = await Http.GetFromJsonAsync<List<Film>>("/api/Films");
+    }
+
+    protected async void add(int idMovie)
+    {
+        PlayListFilms playList = new PlayListFilms();
+        playList.MovieId = idMovie;
+        playList.PlayListId = idMovie;
+        await Http.PostAsJsonAsync<PlayListFilms>("/api/PlayListFilms/", playList);
+    }
+}
+

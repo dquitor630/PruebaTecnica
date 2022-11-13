@@ -1,0 +1,43 @@
+﻿@page "/films"
+@using PruebaTenica.Shared
+@inject HttpClient Http
+@inject NavigationManager Navigation
+<h3>Films</h3>
+@if (_films == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Release Date</th>
+                <th>Lenght</th>
+                <th>Director</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var film in _films)
+            {
+                <tr>
+                    <td>@film.Id.ToString()</td>
+                    <td>@film.Title</td>
+                    <td>@film.ReleaseDate</td>
+                    <td>@film.Lenght</td>
+                    <td>@film.Director</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+
+    private List<Film> _films;
+    protected override async Task OnInitializedAsync()
+    {
+        _films = await Http.GetFromJsonAsync<List<Film>>("/api/Films");
+    }
+}

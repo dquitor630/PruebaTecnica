@@ -1,0 +1,41 @@
+﻿@page "/PlayList"
+@using PruebaTenica.Shared
+@inject HttpClient Http
+@inject NavigationManager Navigation
+<h3>PlayList</h3>
+@if (_playList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var playList in _playList)
+            {
+                <tr>
+                    <td>@playList.Id.ToString()</td>
+                    <td>@playList.Name</td>
+                    <td>
+                        <a href="./Edit/@playList.Id">Edit</a>
+                        <a href="./Detail/@playList.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+
+    private List<PlayList> _playList;
+    protected override async Task OnInitializedAsync()
+    {
+        _playList = await Http.GetFromJsonAsync<List<PlayList>>("/api/PlayLists");
+    }
+}

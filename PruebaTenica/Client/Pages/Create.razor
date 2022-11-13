@@ -1,0 +1,42 @@
+﻿@page "/film/create"
+@using PruebaTenica.Shared
+@inject HttpClient http
+@inject NavigationManager Navigation
+@page "/create"
+<PageTitle>Create</PageTitle>
+<h3>Add film</h3>
+<EditForm Model="@_film" OnValidSubmit="Post">
+    <div class="form-group">
+        <label>Title: </label>
+        <InputText @bind-Value="_film.Title" />
+    </div>
+    <div class="form-group">
+        <label>Lenght: </label>
+    <InputNumber @bind-Value="_film.Lenght" />
+    </div>
+    <div class="form-group">
+        <label>Release Date: </label>
+        <InputDate @bind-Value="date" />
+    </div>
+    <div class="form-group">
+        <label>Director: </label>
+        <InputTextArea @bind-Value="_film.Director" />
+    </div>
+
+    <div class="form-group">
+        <input type="submit" class="btn btn-success" value="Add film." />
+    </div>
+
+
+</EditForm>
+@code {
+    private Film _film = new();
+    private DateTime date = new DateTime();
+    private DateOnly dateOnly = new DateOnly();
+    private async Task Post()
+    {
+        dateOnly = DateOnly.FromDateTime(date);
+        _film.ReleaseDate = dateOnly.ToString();
+        await http.PostAsJsonAsync<Film>("/api/Films/", _film);
+    }
+}
